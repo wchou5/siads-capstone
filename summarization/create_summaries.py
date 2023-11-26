@@ -1,5 +1,4 @@
 import pandas as pd
-import datetime
 
 from pysummarization.nlpbase.auto_abstractor import AutoAbstractor
 from pysummarization.tokenizabledoc.simple_tokenizer import SimpleTokenizer
@@ -150,24 +149,9 @@ textCol = 'article'
 num_sentences = 4
 num_words = 80 # Assuming 20 words in a sentence
 
-start = datetime.datetime.now()
-print('\nSTARTING pysummarization: ' + str(start))
 df['pysum'] = df[textCol].apply(lambda x: use_pysummarization(x))
-print('RUNTIME: ' + str(datetime.datetime.now() - start))
-
-start = datetime.datetime.now()
-print('nSTARTING gensim: ' + str(start))
 df['gensim'] = df.apply(lambda x: use_gensim(x[textCol], num_words), axis = 1)
-print('RUNTIME: ' + str(datetime.datetime.now() - start))
-
-start = datetime.datetime.now()
-print('\nSTARTING spacy: ' + str(start))
 df['spacy'] = df.apply(lambda x: use_spacy(x[textCol], num_sentences), axis = 1)
-print('RUNTIME: ' + str(datetime.datetime.now() - start))
-
-start = datetime.datetime.now()
-print('\nSTARTING cosine similarity: ' + str(start))
 df['cos_sim'] = df.apply(lambda x: use_cos_sim(x[textCol], num_sentences), axis = 1)
-print('RUNTIME: ' + str(datetime.datetime.now() - start))
 
 df.to_csv('output/create_summaries_output.csv', index = False)
