@@ -30,7 +30,7 @@ def cleanup_article(text):
 skip_next = ['By .', 'PUBLISHED: .', 'UPDATED: .']
 remove = ['click here', 'follow @', 'last updated', 'scroll down']
 
-df = pd.read_csv('data/original_dataset.csv')
+df = pd.read_csv('train.csv')
 df = df[['article', 'highlights']]
 
 df['article'] = df.apply(lambda x: cleanup_article(x['article']), axis = 1)
