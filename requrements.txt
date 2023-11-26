@@ -1,0 +1,11 @@
+pandas
+re
+datetime
+pysummarization
+gensim v3.8.3
+spacy (need to en_core_web_sm)
+nltk
+numpy
+networkx
+evaluate
+altair
