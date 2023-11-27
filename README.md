@@ -4,15 +4,15 @@ For creating the summaries and evaluation:
 1. Run summarization/clean_df.py
   - will read from train.csv
   - outputs to output/clean_df_output.csv
-  - Runtimes: approx 6 minutes
+  - Runtime: 10 minutes
 2. Run summarization/create_summaries.py
   - will read from output/clean_df_output.csv
   - outputs to output/create_summaries_output.csv
-  - Runtimes: approx 1.5 hours
+  - Runtime: 2 hours
 3. Run summarization/evaluate_summaries.py
   - will read from output/create_summaries_output.csv
   - outputs to output/evaluate_summaries_output.csv
-  - Runtimes: approx 3.5 hours
+  - Runtime: 3 hours
 
 For creating visuals:
 1. After summarization/clean_df.py, run summary_stats.ipynb
