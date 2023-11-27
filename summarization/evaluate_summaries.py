@@ -13,7 +13,7 @@ def eval_rouge(summary, reference):
 
 
 def eval_bleu(summary, reference):
-  return bleu.compute(predictions=[summary], references=[reference])['bleu']
+  return bleu.compute(predictions=[summary], references=[reference], max_order = 2)['bleu']
 
 
 def eval_bertscore(summary, reference):
@@ -30,22 +30,10 @@ df = df[df['cos_sim'] != '---']
 df = df.dropna()
 
 for col in ['pysum', 'gensim', 'spacy', 'cos_sim']:
-  start = datetime.datetime.now()
-  print('\nSTARTING ' + col + ': ' + str(start))
-
-  print('- Rouge')
   df['results'] = df.apply(lambda x: eval_rouge(x['highlights'], x[col]), axis = 1)
   df[[col + '_rouge1', col + '_rouge2', col + '_rougeL', col + '_rougeLsum']] = pd.DataFrame(df['results'].tolist(), index = df.index)
-  
-  print('- Bleu')
   df[col + '_bleu'] = df.apply(lambda x: eval_bleu(x['highlights'], x[col]), axis = 1)
-  
-  print('- Bert')
   df[col + '_bert'] = df.apply(lambda x: eval_bertscore(x['highlights'], x[col]), axis = 1)
-  
-  print('- Meteor')
   df[col + '_meteor'] = df.apply(lambda x: eval_meteor(x['highlights'], x[col]), axis = 1)
-
-  print('RUNTIME: ' + str(datetime.datetime.now() - start))
 
 df.to_csv('output/evaluate_summaries_output.csv', index = False)
