@@ -53,7 +53,7 @@ def use_spacy(article, num_sentences):
   freq_word = Counter(keyword)
   max_freq = Counter(keyword).most_common(1)[0][1]
   for word in freq_word.keys():
-    freq_word[word] = (freq_word[word]/max_freq)
+    freq_word[word] = (freq_word[word] / max_freq)
   
   sent_strength = {}
   for sent in doc.sents:
