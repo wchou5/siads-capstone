@@ -6,4 +6,4 @@ For creating the summaries and evaluation (found in summarization folder):
 
 For creating visuals:
 1. After clean_df.py, run summary_stats.ipynb (will read from clean_df_output.csv)
-2. After evaluate_summaries.py, run .................................
+2. After evaluate_summaries.py, run evaluation_stats.ipynb (will read from old_evaluate_summaries_output.csv)
