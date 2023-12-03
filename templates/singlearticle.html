@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: #272b34;
+        font-family: 'Khula', sans-serif;
+        font-weight: 300;
+        color: white;
+        line-height: 1em;
+        margin: 0;
+      padding: 2em 1em;
+    }
+</style>
+<body>
+    <h1>{{article['title']}}</h1>
+    <br/>
+    <p>{{article['summary']}}</p>
+    <br/>
+    <h3>Linguistic composition: original vs summary</h3>
+    <div id='chart' class='chart'”></div>
+    <br/>
+    <h3>Word count distribution: original vs summary</h3>
+    <div id='chart2' class='chart2'”></div>
+</body>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+    var graphs = {{article.linguistic_figure | safe}};
+    var graphs2 = {{article.word_dist_figure | safe}};
+    Plotly.plot('chart',graphs,{});
+    Plotly.plot('chart2',graphs2,{});
+</script>
+</html>
