@@ -38,6 +38,7 @@ def use_gensim(article, summary_len):
   return summarize(article, word_count = summary_len)
 
 
+# Code is based off of https://medium.com/analytics-vidhya/text-summarization-using-spacy-ca4867c6b744
 def use_spacy(article, num_sentences):
   doc = nlp(article)
   keyword = []
@@ -70,6 +71,7 @@ def use_spacy(article, num_sentences):
   return ' '.join(final_sentences)
 
 
+# Code is based off of https://medium.com/analytics-vidhya/text-summarization-in-python-using-extractive-method-including-end-to-end-implementation-2688b3fd1c8c
 def read_article(text):
   sentences = []
   sentences = sent_tokenize(text)
