@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Team News Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+  <!-- Link Swiper's CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+  <!--...-->
+
+  <!-- Demo styles -->
+  <style>
+    html,
+    body {
+      position: relative;
+      height: 100%;
+    }
+
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    .swiper {
+        width: 100%;
+        height: auto; /* Adjust the height according to the content */
+        padding: 20px 0; /* Add padding to make it look better */
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        border: 1px solid #ddd; /* Add a border around the slide */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Add a shadow for depth */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 13.5%; /* Adjust width according to your needs */
+        height: auto; /* Make it auto to adjust according to the content */
+        padding: 20px; /* Add padding inside the slide */
+        margin: 10px; /* Add margin between slides */
+        /* Add padding-top with a percentage to create a ratio */
+        padding-top: 24%; /* 16/9 = 177.77% */
+        position: relative; /* Make this relative so that the content can be absolute */
+        border-radius: 10px; /* Adjust this value as needed */
+        overflow: hidden; /* This will ensure the image also gets the border-radius applied */
+}
+
+
+    .swiper-slide img {
+        display: block;
+        max-width: 100%; /* Max width to make sure the image doesn't overflow */
+        height: auto; /* Make height auto to maintain the aspect ratio */
+        object-fit: cover;
+        /* Make these adjustments to make the image fit into the slide */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1; /* set a z-index to ensure the image sits behind the text */
+        border-radius: 10px; /* Adjust this value as needed */
+}
+
+.swiper-slide:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 40%; /* controls the height of the gradient */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent); /* change color and direction as needed */
+    z-index: 2; /* ensure gradient is above the image but below the text */
+}
+
+.swiper-slide div {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 3; /* ensure the text sits above the image and gradient */
+    color: #fff; /* change text color as needed */
+}
+
+
+.swiper-slide .slide-content {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    text-align: left;
+}
+
+.swiper-slide .slide-content h3 {
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 5px; /* Add space below the title */
+    padding: 0;
+    line-height: 1.2;
+}
+
+.swiper-slide .slide-content p {
+    font-size: 14px;
+    margin: 0;
+    margin-bottom: 10px; /* Add space below the views count */
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.swiper-slide .slide-content p img {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+}
+
+.swiper-slide .slide-content .views {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.swiper-slide .slide-content .views span {
+    margin-left: 5px;
+}
+
+.swiper-slide .slide-content .views img {
+    width: 15px;
+    height: 15px;
+    position: unset;
+}
+
+
+
+/* For mobile screens */
+@media only screen and (max-width: 600px) {
+        .swiper-slide {
+            width: 60%; /* adjust as needed */
+            padding-top: 106.25%; /* adjust as needed to maintain aspect ratio */
+        }
+    }
+
+/* Updated Modal CSS */
+/* Updated Modal CSS */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(5px)
+}
+
+.modal-content {
+    position: relative;
+    padding: 20px 0px 50px 20px;
+    border: 1px solid #888;
+    width: 80vw;;
+    max-width: 90%;
+    height: 80vh;
+    aspect-ratio: 9/16;
+    box-shadow: 0 12px 15px 0 rgba(0,0,0,0.1), 0 17px 50px 0 rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    border-radius: 10px;
+    font-weight: 400;
+    overflow: hidden; /* Prevent scrollbar from appearing */
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.modal-content::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* Overlay */
+    background-image: inherit; 
+    /* Blurring effect */
+    filter: blur(10px);
+    z-index: -1;
+    
+}
+
+.modal-content::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    /* Add red linear gradient */
+    background-image: linear-gradient(rgb(141 167 214 / 70%), rgb(26 1 1 / 40%));
+    z-index: -1;
+    
+}
+
+
+
+.modal-content-inner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow-y: auto; /* Enable scrollbar when content is larger than the container */
+}
+
+
+
+.open {
+  display: flex;
+}
+
+.modal-header,
+.modal-footer {
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+
+.modal-body {
+    padding: 10px;
+    font-size: 18px;
+    line-height: 1.6;
+    border-radius: 10px;
+}
+
+.close {
+    color: #ffffff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    background: #444444; 
+    border-radius: 50%; 
+    height: 36px; 
+    width: 36px;
+    line-height: 36px; 
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer; 
+    border: none; 
+    opacity: 0.8; 
+}
+
+.close:hover,
+.close:focus {
+    color: #fefefe;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 1;
+    background: #333333;
+}
+
+
+.back-button {
+    color: #ffffff8f;
+    font-size: 22px;
+    background: none;  /* Remove the background */
+    height: 32px;
+    width: 32px;
+    position: absolute;  /* Position the button absolutely */
+    top: 10px;  /* Position from the top */
+    left: 10px;  /* Position from the left */
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.back-button:hover, .back-button:focus {
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* Sticky Bar Styles */
+.sticky-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0; /* Added this line to position the sticky bar from the left as well */
+    width: 100%; /* Adjust the width of the sticky bar */
+    /*margin: 0 -20px; /* Add negative margin to counteract the parent's padding */
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #4444445c;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Button Styles */
+.sticky-bar button {
+    border: none; /* Removes the default button border */
+    background: none; /* Removes the default button background */
+    color: inherit; /* Inherit the color from the .sticky-bar styles */
+    font-size: 20px; /* Increases the size of the icons */
+    cursor: pointer; /* Changes the cursor to a hand when hovering over the buttons */
+}
+
+.sticky-bar button:hover {
+    color: #ddd; /* Lightens the color of the icons when hovered */
+}
+
+
+#modalTitle {
+  padding-top: 10px;
+}
+
+
+.article-info {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px 10px 0;
+}
+
+#modalPublishDate,
+#modalViews {
+    margin: 0;
+}
+
+#modalPublishDate {
+    margin-right: 20px; /* Adjust this to increase or decrease space */
+}
+
+
+
+
+.article-highlights h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.article-highlights ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.article-highlights li {
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+
+
+.scrollable-content {
+    overflow-y: auto;
+    flex-grow: 1; /* Takes up remaining space */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* Firefox */
+    padding-right: 13px; /* removes any right padding */
+    margin-right: 0; /* removes any right margin */
+    
+}
+
+/* Scrollbar styles for Webkit browsers (Chrome, Safari, Edge) */
+.scrollable-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 30%);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.article-summary h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.article-summary p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+
+
+.article-sentiment h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.article-sentiment p {
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.6;
+    font-size: 16px; 
+    color: #333;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.article-sentiment p[data-sentiment='Positive'] {
+    background-color: #DFF2BF; /* light green */
+    color: #4F8A10; /* dark green */
+}
+
+.article-sentiment p[data-sentiment='Negative'] {
+    background-color: #FFBABA; /* light red */
+    color: #D8000C; /* dark red */
+}
+
+.article-sentiment p[data-sentiment='Neutral'] {
+    background-color: #E0E4E6; /* light grey */
+    color: #333; /* dark grey */
+}
+
+.article-sentiment .sentiment-reason {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 14px; /* slightly smaller than main text */
+    color: #fff; /* darker shade of grey */
+}
+
+
+.article-poll h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.article-poll .poll-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    color: #fff;
+}
+
+.article-poll .poll-button .fas{
+    padding-right: 10px;
+}
+
+.article-poll .poll-button.agree:hover {
+    background-color: #DFF2BF; /* light green */
+}
+
+.article-poll .poll-button.disagree:hover {
+    background-color: #FFBABA; /* light red */
+}
+
+.article-poll .poll-button.unsure:hover {
+    background-color: #E0E4E6; /* light grey */
+}
+
+
+.related-articles h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.related-articles ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.related-articles ul li {
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+
+.related-articles a {
+    text-decoration: none;
+    color: #fefefe; /* adjust as needed */
+}
+
+.related-articles a:hover {
+    text-decoration: underline;
+}
+
+
+
+.opposing-viewpoints h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.opposing-viewpoints ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.opposing-viewpoints ul li {
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+
+.opposing-viewpoints a {
+    text-decoration: none;
+    color: #fefefe; /* adjust as needed */
+}
+
+.opposing-viewpoints a:hover {
+    text-decoration: underline;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+}  
+
+.flex-child:first-child {
+    margin-right: 20px;
+} 
+
+
+@keyframes modalOpen {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes modalClose {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.modal.zoom-in {
+  animation: modalOpen 0.4s;
+}
+
+.modal.zoom-out {
+  animation: modalClose 0.4s;
+}
+
+
+
+/* navigation css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+nav {
+    background-color: #333;
+    padding: 10px 20px;
+    text-align: center;
+    position: relative;
+}
+
+nav .logo {
+    color: white;
+    float: left;
+}
+
+nav label.toggle-button {
+    display: none;
+    font-size: 26px;
+    line-height: 50px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.toggle {
+    display: none; /* Hide checkbox */
+}
+
+nav .menu {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+nav .menu a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+}
+
+nav .menu a:hover {
+    background-color: #555;
+}
+
+@media (max-width: 600px) {
+    nav label.toggle-button {
+        display: block;
+    }
+
+    nav .menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 300px; /* Adjusted width */
+        background-color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000; /* Ensure it's above other content */
+    }
+
+    nav input[type="checkbox"]:checked + .menu {
+        transform: translateX(0);
+    }
+
+    nav .menu a {
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .logo {
+        position: fixed;
+        left: 10px;
+        top: 10px;
+    }
+}
+
+
+
+  </style>
+</head>
+
+<body>
+    <nav>
+        <!-- <div class="logo">Team News Analyzer</div> -->
+        <label for="toggle" class="toggle-button">&#9776;</label>
+        <input type="checkbox" id="toggle" class="toggle"/>
+        <div class="menu">
+            <a href="{{ url_for('index') }}">Home</a>
+            {% for cat in categories %}
+                <a href="{{ url_for('index_category', category=cat) }}">{{cat}}</a>
+            {% endfor %}
+            <!-- <a href="#">Category 1</a>
+            <a href="#">Category 2</a>
+            <a href="#">Category 3</a>
+            <a href="#">Category 4</a>
+            <a href="#">Category 5</a>
+            <a href="#">Category 6</a>
+            <a href="#">Category 7</a>
+            <a href="#">Category 8</a> -->
+        </div>
+    </nav>
+
+  <!-- Swiper -->
+  <!-- Swiper -->
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+        {% block content %}
+            {% for item in news_objects %}
+                <div class="swiper-slide" onclick="showModal(this)">
+                    <img src="https://picsum.photos/576/1024?random={{loop.index}}" alt="Slide 1">
+                    <div class="slide-content">
+                        <h3>
+                            <!-- <a class="article_url" style="color:white" href="{{ url_for('single_article', article_name=item.article_id) }}"> -->
+                            {{item['title']}}
+                            <!-- </a> -->
+                        </h3>
+                        <!-- <p class="views">
+                            <img src="https://via.placeholder.com/{{loop.index}}" alt="View Icon"><span></span>
+                        </p> -->
+                        <p class="summary" style="display:none;">{{item['summary']}}</p>
+                        <p class="publish_date" style="display:none;">{{item['pubDate']}}</p>
+                        <p class="newslink" style="display:none;">{{item['link']}}</p>
+                        <a class="article_url" style="color:white; display:none;" href="{{ url_for('single_article', article_name=item.article_id) }}"></a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endblock %}
+        <!-- Continue this pattern for all other slides... -->
+    </div>
+</div>
+
+
+
+<div id="myModal" class="modal">
+    <div class="modal-content" style="background-image: url(&quot;https://picsum.photos/576/1024?random=3&quot;);">
+
+        
+        <!-- Article Title and Share, Like, Dislike Buttons -->
+        <div class="article-header">
+            <button class="back-button" onclick="closeModal()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 id="modalTitle">Advances in Quantum Computing</h2>
+            
+        </div>
+
+        <div class="scrollable-content">
+
+            <!-- Article Views and Publish Date -->
+            <div class="article-info">
+                <p id="modalPublishDate">17 July 2023</p>
+                <p>
+                    Original Article : 
+                    <a id="modelLink" style="color:white;" href="#" target="_blank">Here</a>
+                </p>
+                <!-- <p id="modalViews">5k views</p> -->
+            </div>
+
+            <!-- Key Highlights -->
+            <!-- <div class="article-highlights">
+                <h3>Key Highlights:</h3>
+                <ul>
+                    <li>You can adjust these styles to fit your website's design, including colors, font sizes, padding, and margin.</li>
+                    <li>The list items have a bit of line-height for readability and some bottom margin to space them out. </li>
+                </ul>
+            </div> -->
+
+            <!-- AI Summarization -->
+            <div class="article-summary">
+                <h3>News Summary:</h3>
+                <p id="modalSummary">Quantum computing has the potential to revolutionize technology by processing information more quickly and accurately.</p>
+            </div>
+
+            <!-- Sentiment -->
+            <!-- <div class="article-sentiment">
+                <h3>Sentiment:</h3>
+                <p data-sentiment="Positive">Positive</p>
+                <p class="sentiment-reason">Reason: The article presents Quantum Computing in a promising and beneficial light.</p>
+            </div> -->
+            
+
+            <!-- Poll -->
+            <!-- <div class="article-poll">
+                <h3>Poll: Do you agree with the article's viewpoint?</h3>
+                <button class="poll-button agree" title="Agree"><i class="fas fa-check"></i>Agree</button>
+                <button class="poll-button disagree" title="Disagree"><i class="fas fa-times"></i>Disagree</button>
+                <button class="poll-button unsure" title="Unsure"><i class="fas fa-question"></i>Unsure</button>
+            </div> -->
+            
+
+            <!-- <div class="related-articles">
+                <h3>Related Articles:</h3>
+                <ul>
+                    <li><a href="article2.html">Exploring the Future of Quantum Computing</a></li>
+                    <li><a href="article3.html">Advancements in Quantum Algorithms</a></li>
+                    <li><a href="article4.html">How Quantum Computing Could Change the World</a></li>
+                </ul>
+            </div> -->
+
+
+            <!-- <div class="opposing-viewpoints">
+                <h3>Opposing Viewpoints:</h3>
+                <ul>
+                    <li><a href="article5.html">The Limitations of Quantum Computing</a></li>
+                    <li><a href="article6.html">Quantum Computing: Not Ready for Prime Time</a></li>
+                    <li><a href="article7.html">The Risks and Challenges of Quantum Technology</a></li>
+                </ul>
+            </div> -->
+
+            <!-- Charts -->
+            <br/>
+            <br/>
+            <div class="flex-container">
+                <div class="flex-child">
+                    <h3>Linguistic composition: original vs summary</h3>
+                    <div id='modalchart' class='modalchart'”></div>
+                </div>
+                <div class="flex-child">
+                    <h3>Word count distribution: original vs summary</h3>
+                    <div id='modalchart2' class='modalchart2'”></div>
+                </div>
+            </div>
+            
+
+        </div>
+        <!-- Sticky Bar -->
+        <!-- <div class="sticky-bar">
+            <button class="prev-article-button"><i class="fas fa-arrow-left"></i></button>
+            <button class="next-article-button"><i class="fas fa-arrow-right"></i></button>
+            <button class="share-button">
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <button class="like-button">
+                <i class="fas fa-thumbs-up"></i>
+            </button>
+            <button class="dislike-button">
+                <i class="fas fa-thumbs-down"></i>
+            </button>
+        </div> -->
+
+
+    </div>
+</div>
+
+  
+
+
+
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+  <!-- Initialize Swiper -->
+  
+<script>
+
+var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 'auto', // It will adjust the number of slides based on the width of slides and container
+    spaceBetween: 10, // space between slides
+    slidesOffsetBefore: 20, // space before first slide
+    slidesOffsetAfter: -60, // space after last slide
+    freeMode: true,
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+    autoHeight: true, // Enable auto height
+    slidesPerColumnFill: 'row',
+    mousewheel: {
+        forceToAxis: true,
+    },
+    on: {
+      click: function(swiper, event) {
+        var clickedSlide = swiper.clickedSlide;
+        if (clickedSlide) {
+          showModal(clickedSlide);
+        }
+      }
+    }
+});
+
+var modal = document.getElementById("myModal");
+var modalContent = modal.querySelector('.modal-content');
+
+function showModal(targetElement) {
+    var title = targetElement.querySelector('h3').innerText;
+    // var views = targetElement.querySelector('.views').innerText;
+    var summary = targetElement.querySelector('.summary').innerText;
+    var original_article = targetElement.querySelector('.newslink').innerText;
+    var imgSrc = targetElement.querySelector('img').src;
+    // var src_url = targetElement.querySelector('img').src;
+    var pub_date = targetElement.querySelector('.publish_date').innerText;
+    var single_article_url = targetElement.querySelector('.article_url').href;
+    var graph1;
+    var graph2;
+    var val_set = false;
+
+    fetch(single_article_url.replace("article", "article_chart"))
+    .then(response => response.json())
+    .then(data => {
+        if (!val_set){
+            graph1 = JSON.parse(data['linguistic_figure']);
+            graph2 = JSON.parse(data['word_dist_figure']);
+            Plotly.newPlot('modalchart',graph1,{});
+            Plotly.newPlot('modalchart2',graph2,{});
+            val_set=true;
+        }
+        
+    })
+
+    document.getElementById('modalTitle').innerText = title;
+    // document.getElementById('modalViews').innerText = views;
+    document.getElementById('modalSummary').innerText = summary;
+    document.getElementById('modalPublishDate').innerText = pub_date;
+    document.getElementById('modelLink').href = original_article;
+
+
+    modalContent.style.backgroundImage = 'url(' + imgSrc + ')';
+
+    modal.classList.add('open', 'zoom-in');
+    modal.classList.remove('zoom-out');
+}
+
+var span = document.getElementsByClassName("back-button")[0];
+span.onclick = function() {
+    modalContent.style.backgroundImage = '';
+    modal.classList.add('zoom-out');
+    modal.classList.remove('open', 'zoom-in');
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        span.onclick(); // Use the same close function
+    }
+}
+
+
+</script>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+
+</body>
+
+</html>
