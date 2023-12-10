@@ -1,5 +1,7 @@
 Install the libraries listed in requirements.txt (make sure to match version if listed)
 
+For dataset, download train.csv from https://www.kaggle.com/datasets/gowrishankarp/newspaper-text-summarization-cnn-dailymail/data
+
 For creating the summaries and evaluation:
 1. Run summarization/clean_df.py
   - will read from train.csv
