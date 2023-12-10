@@ -23,3 +23,10 @@ For creating visuals:
 2. After summarization/evaluate_summaries.py, run evaluation_stats.ipynb
   - will read from output/evaluate_summaries_output.csv
   - visuals can be found in evaluation_stats_images/
+
+For creating visuals similar to website:
+1. Send a request to url : url = "https://us-central1-news-analyzer-403505.cloudfunctions.net/get_news?freshness=any&categories=world&max_results=10&stats=1"
+   - Eg : response = requests.get(url)
+   -      response_json = response.json()
+   -  This will return the a list of responses. Store a single response. Eg : article = response_json[0]
+2. Pass this 'article' variable to linguistic_plot and word_count_distribution_plot which are present in plot_utils.py. This will return the figures for linguistic composition and word count distribution
