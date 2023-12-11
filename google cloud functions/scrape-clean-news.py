@@ -24,6 +24,8 @@ CSS_SELECTORS_TO_REMOVE = [
     '.img-container.shareable-item.wp-caption'
 ]
 
+FILE_PATH = 'YOUR GOOGLE CLOUD STORAGE BUCKET PATH' #, e.g. gs://news-project-file-storage/newsdata_api_export/
+
 # Function to clean HTML content by removing attributes containing ad keywords
 def clean_with_attributes(soup, keywords):
     for tag in soup.find_all(True):
@@ -108,7 +110,7 @@ def main_execution(cloud_event):
         filename_match = re.search(r"/(\d{4}_\d{2}_\d{2}/[^/]+\.csv)", file_path)
         filename = filename_match.group(0)
         if len(df):
-            df.to_csv(f'FILE_PATH'+filename, index=False) #define file path to store dataframe
+            df.to_csv(f'{FILE_PATH}'+filename, index=False) #define file path to store dataframe
 
             print('content clean done: '+ filename)
 
