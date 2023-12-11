@@ -1,6 +1,6 @@
 import functions_framework
 
-# %%
+
 from goose3 import Goose
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -11,22 +11,20 @@ import gcsfs
 import fsspec
 import pytz
 
-# %%
+# Define a list of keywords associated with ads and other unwanted elements
 AD_KEYWORDS = [
     'ad', 'banner', 'promo', 'sponsor', 'googlead',
     'advertisement', 'affiliate', 'adblock', 'social', 'READ MORE'
 ]
 
+# Define CSS selectors for elements to be removed from HTML
 CSS_SELECTORS_TO_REMOVE = [
-    #'.class-to-remove',
-    #'#id-to-remove',
-    #'div[style*="display: none"]',
     '.mor-link',
     'p em strong',
     '.img-container.shareable-item.wp-caption'
 ]
 
-# %%
+# Function to clean HTML content by removing attributes containing ad keywords
 def clean_with_attributes(soup, keywords):
     for tag in soup.find_all(True):
         attrs_to_remove = []
@@ -47,6 +45,7 @@ def clean_with_attributes(soup, keywords):
             del tag[attr]
     return soup
 
+# Function to remove elements from HTML based on CSS selectors
 def remove_selectors(soup, selectors):
     for selector in selectors:
 
@@ -56,6 +55,7 @@ def remove_selectors(soup, selectors):
 
     return soup
 
+# Function to preprocess HTML content of a given URL
 def preprocess_html(url, keywords, selectors):
 
     g = Goose()
@@ -70,24 +70,18 @@ def preprocess_html(url, keywords, selectors):
 
     return str(soup)
 
-
+# Cloud function triggered to process news data
 @functions_framework.cloud_event
 def main_execution(cloud_event):
     data = cloud_event.data
-    bucket = data["bucket"]
-    file_path = data["name"]
+    bucket = data["bucket"] #define Google cloud storage bucket
+    file_path = data["name"] #define Google cloud storage path
 
     if bucket == "news-project-file-storage" and "articles" in file_path and ".csv" in file_path:
 
-        # %%
-        df = pd.read_csv('gs://'+bucket+'/'+file_path)
-        # %%
-        # for index, row in df.iterrows():
-        #     df.loc[index, 'clean_content'] = index
+        df = pd.read_csv('gs://'+bucket+'/'+file_path) 
+        
 
-        # %%
-
-        #print("df len: ", len(df))
         error_url = []
         error_reason = []
 
@@ -105,58 +99,16 @@ def main_execution(cloud_event):
                 error_reason.append(e)
                 df.loc[index, 'clean_content'] = None
 
-        # %%
-        # df.isna().sum()
-
-        # %%
-        # len(error_url)
-
-        # %%
         df = df[~df['clean_content'].isna()]
 
-        # %%
         df['clean_content_len'] = df['clean_content'].apply(lambda x: len(x))
 
-        # %%
-        # df['clean_content_len'].describe()
-
-        # %%
         df = df[df['clean_content_len'] > 500]
 
-        # %%
-        # df.shape
-        # df['clean_content_len'].describe()
-
-        # %%
         filename_match = re.search(r"/(\d{4}_\d{2}_\d{2}/[^/]+\.csv)", file_path)
         filename = filename_match.group(0)
         if len(df):
-            df.to_csv(f'gs://news-project-outputs/newsdata_scraped_content'+filename, index=False)
+            df.to_csv(f'FILE_PATH'+filename, index=False) #define file path to store dataframe
 
             print('content clean done: '+ filename)
 
-
-
-"""
-# Triggered by a change in a storage bucket
-@functions_framework.cloud_event
-def hello_gcs(cloud_event):
-    data = cloud_event.data
-
-    event_id = cloud_event["id"]
-    event_type = cloud_event["type"]
-
-    bucket = data["bucket"]
-    name = data["name"]
-    metageneration = data["metageneration"]
-    timeCreated = data["timeCreated"]
-    updated = data["updated"]
-
-    print(f"Event ID: {event_id}")
-    print(f"Event type: {event_type}")
-    print(f"Bucket: {bucket}")
-    print(f"File: {name}")
-    print(f"Metageneration: {metageneration}")
-    print(f"Created: {timeCreated}")
-    print(f"Updated: {updated}")
-"""

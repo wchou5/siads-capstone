@@ -1,6 +1,7 @@
 import functions_framework
 from pandas_gbq import read_gbq
 
+# Function to fetch news data based on specified parameters from BigQuery database
 def fetch_news_data(freshness, categories, max_results=20):
 
     query = """
@@ -45,6 +46,7 @@ def fetch_news_data(freshness, categories, max_results=20):
 
     return query_news_data
 
+#Function to handle HTTP requests and preparing GET API
 @functions_framework.http
 def hello_http(request):
 

@@ -3,7 +3,6 @@ import functions_framework
 import gcsfs
 import fsspec
 
-# %%
 from datetime import datetime, date
 import pandas as pd
 import newspaper
@@ -17,30 +16,18 @@ from collections import Counter
 import requests
 import pytz
 
-# %% [markdown]
-# ## Variables
-
-# %%
+# Define categories for news articles
 categories = ['business', 'entertainment', 'environment', 'food', 'health', 
             'politics', 'science', 'sports', 'world', 'tourism', 'technology', 'top']
 
 categories1 = categories[:5]
 categories2 = categories[5:10]
 
-# def get_api_key():
-#     config = ConfigParser()
-#     config.read('config.ini')
-#     return config['newsdata']['api_key']
-
-# API_KEY = get_api_key()
-
-API_KEY = 'pub_311061b81de560644ed301fe11e5a7cb16a12'
+# API Key for NewsData API
+API_KEY = 'ENTER API KEY HERE'
 api = NewsDataApiClient(apikey=API_KEY)
 
-# %% [markdown]
-# ## Functions
-
-# %%
+# Function to fetch all pages of news articles for a given category
 def get_all_page_response2(category, domain_url=None):
     page = None
     responses_results = []
@@ -60,7 +47,8 @@ def get_all_page_response2(category, domain_url=None):
             
     return responses_results
 
-# %%
+
+# Function to create a DataFrame from the API responses
 def create_response_df2(responses):
     flattened_data = []
     print(len(responses))
@@ -83,9 +71,7 @@ def create_response_df2(responses):
     else:
         return pd.DataFrame()
 
-# %% [markdown]
-# ## DataFrame Creation
-
+# Cloud function to execute the main process
 @functions_framework.cloud_event
 def main_execution(cloud_event):
     print('main execution started')
