@@ -30,3 +30,28 @@ For creating visuals similar to website:
    -      response_json = response.json()
    -  This will return the a list of responses. Store a single response. Eg : article = response_json[0]
 2. Pass this 'article' variable to linguistic_plot and word_count_distribution_plot which are present in plot_utils.py. This will return the figures for linguistic composition and word count distribution
+
+For creating a Google Cloud hosted solution:
+You will require to create a Google Cloud project with access to Google Cloud Function, Google Cloud Storage and Google BigQuery. Once created, you can utilize the following scripts as individual cloud functions:
+
+1. google cloud functions/fetch-newsdata.py
+  - Will fetch latest news articles
+  - Outputs CSV to Google Cloud Storage bucket
+2. google cloud functions/scrape-clean-news.py
+  - Will retrieve incoming CSV file from Google Cloud Storage
+  - Process and clean the articles
+  - Outputs a cleaned version of the CSV to Google Cloud Storage bucket
+3. google cloud functions/push-to-bigquery.py
+  - Will retrieve the incoming cleaned CSV file from Google Cloud Storage
+  - Run the best performing article summarization model
+  - Summarize cleaned articles and extract data objects for visualization
+  - Stores the output in a Google BigQuery table
+4. google cloud functions/get-news-api.py
+  - Accepts incoming GET requests with the following parameters:
+    - Freshness: to retrieve articles in last X minutes
+    - Categories: comma separated list of categories (if multiple)
+    - Max_result: the number of maximum articles to be retrieved from BigQuery
+    - Stats: Boolean to define whether to fetch additional data required for producing visualizations on the website
+
+
+
