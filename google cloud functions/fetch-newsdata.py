@@ -27,6 +27,9 @@ categories2 = categories[5:10]
 API_KEY = 'ENTER API KEY HERE'
 api = NewsDataApiClient(apikey=API_KEY)
 
+#Path to Google Cloud Storage bucket
+path_to_google_cloud_storage = 'YOUR PATH HERE' # e.g., gs://news-project-file-storage/newsdata_api_export/
+
 # Function to fetch all pages of news articles for a given category
 def get_all_page_response2(category, domain_url=None):
     page = None
@@ -51,7 +54,6 @@ def get_all_page_response2(category, domain_url=None):
 # Function to create a DataFrame from the API responses
 def create_response_df2(responses):
     flattened_data = []
-    print(len(responses))
     for page in responses:
         for news in page['results']:
             flattened_result = {}
@@ -74,25 +76,17 @@ def create_response_df2(responses):
 # Cloud function to execute the main process
 @functions_framework.cloud_event
 def main_execution(cloud_event):
-    print('main execution started')
-    #print(base64.b64decode(cloud_event.data["message"]["data"]))
-    # %%
-    response_all_news_cat1 = get_all_page_response2(categories1)
-    print('cat 1 done')
-    response_all_news_cat2 = get_all_page_response2(categories2)
-    print('cat 2 done')
 
-    # %%
+    response_all_news_cat1 = get_all_page_response2(categories1)
+
+    response_all_news_cat2 = get_all_page_response2(categories2)
+
     df_all_news1 = create_response_df2(response_all_news_cat1)
     df_all_news2 = create_response_df2(response_all_news_cat2)
 
     
     df_all_news = pd.concat([df_all_news1, df_all_news2])
-    print('df merged')
 
-    # %%
-    
-    #df_all_news.to_csv('Articles_'+today_date+'.csv', index=False)
 
     dubai_time_zone = pytz.timezone('Asia/Dubai')
     current_time_dubai = datetime.now(dubai_time_zone)
@@ -109,12 +103,8 @@ def main_execution(cloud_event):
     df_all_news = df_all_news[column_order]
 
     if len(df_all_news):
-        print('sending to gsc...')
 
-        df_all_news.to_csv('gs://news-project-file-storage/newsdata_api_export/'+ today_date +'/articles_'+today_date_hour_min_sec+'.csv', index=False)
-
-        print('articles_'+today_date_hour_min_sec+'.csv created')
-    print('execution completed: '+ today_date_hour_min_sec)
+        df_all_news.to_csv(path_to_google_cloud_storage + today_date +'/articles_'+today_date_hour_min_sec+'.csv', index=False)
 
 
 
