@@ -1,6 +1,8 @@
 import functions_framework
 from pandas_gbq import read_gbq
 
+path_to_bigquery_table = 'YOUR PATH HERE' # e.g. `news-analyzer-403505.news_dataset.news_summaries`
+
 # Function to fetch news data based on specified parameters from BigQuery database
 def fetch_news_data(freshness, categories, max_results=20):
 
@@ -15,8 +17,8 @@ def fetch_news_data(freshness, categories, max_results=20):
         category,
         summary
     FROM
-        `news-analyzer-403505.news_dataset.news_summaries`
-    """
+        
+    """ + path_to_bigquery_table
 
     where_conditions = []
 
