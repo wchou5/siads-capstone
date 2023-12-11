@@ -25,13 +25,11 @@ def index():
 
 @app.route('/article/<article_name>')
 def single_article(article_name):
-    # print([i['article_id'] for i in session['current_article']])
     article = {}
     for item in session['current_article']:
         if item['article_id'] == article_name:
             article = item
             break
-    # print(article)
     if article:
         linguistic_figure = linguistic_plot(article)
         word_dist_figure = word_count_distribution_plot(article)
